@@ -2,6 +2,7 @@ import argparse
 import os
 import math
 import numpy as np
+from arc4 import ARC4
 from utils import *
 from scipy import fftpack
 from PIL import Image
@@ -163,7 +164,28 @@ def main():
               'dc_c': H_DC_C.value_to_bitstring_table(),
               'ac_c': H_AC_C.value_to_bitstring_table()}
 
-    write_to_file(output_file, dc, ac, blocks_count, tables)
+
+
+
+#############################################################
+    # Apriamo un file e cerchiamo di cifrarlo
+    f = open("Lena2.txt", "r+")
+    file_string = f.read()
+
+    arc4 = ARC4('key')
+    cipher = arc4.encrypt(file_string)
+    print(cipher)
+
+
+    arc4.decrypt(cipher)
+    print(cipher)
+
+    print(type(cipher.decode("ascii")))
+    f2 = open("Lena3.png", "w")
+    f2.write(str(cipher.decode("utf-8")))
+
+    write_to_file("Lena3.png", dc, ac, blocks_count, tables)
+#############################################################
 
 
 if __name__ == "__main__":
