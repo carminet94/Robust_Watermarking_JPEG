@@ -175,25 +175,37 @@ def main():
     f = open("Lena2.png", "r+")
     file_string = f.read()
 
-    print(len(file_string))
+    #print(len(file_string))
     vli_int = l.encode_int(int(file_string))
-    print(len(vli_int))
+    #print(vli_int)
+
+    # dc\x97\xa5\x8d\x88\xb3\xdc\xe0\
+    #     97\xa5\x8d\x88\xb3\xdc\xe0\
+    #
 
 
     # # Apriamo un file e cerchiamo di cifrarlo
 
     arc4 = ARC4('key')
-    binary_string = binascii.unhexlify(vli_int)
-    cipher = arc4.encrypt(binary_string)
+
+    #Scrivo in un file VLI in byte
+    with open("myFileName", "wb") as f:
+        f.write(vli_int)
+
+    f_mfn = open("myFileName", "rb")
+    f_mfn_read = f_mfn.read()
+
+    cipher = arc4.encrypt(f_mfn_read)
     print(cipher)
 
 
-    # arc4.decrypt(cipher)
-    # print(cipher)
+    a = arc4.decrypt(cipher)
+    print(a)
 
+## PROBLEMA: IN F2.WRITE NON RIUSCIAMO A SCRIVERE
 
     f2 = open("Lena3.png", "w")
-    f2.write(str(cipher.decode("utf-8")))
+    f2.write(str(cipher.decode("utf-8", "replace")))
 
     write_to_file("Lena3.png", dc, ac, blocks_count, tables)
 #############################################################
