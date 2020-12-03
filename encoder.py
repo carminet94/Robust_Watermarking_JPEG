@@ -1,7 +1,9 @@
 import argparse
+import binascii
 import os
 import math
 import numpy as np
+import leb128s as l
 from arc4 import ARC4
 from utils import *
 from scipy import fftpack
@@ -168,19 +170,28 @@ def main():
 
 
 #############################################################
-    # Apriamo un file e cerchiamo di cifrarlo
-    f = open("Lena2.txt", "r+")
+
+    # Applichiamo la codifica VLI LSB128S
+    f = open("Lena2.png", "r+")
     file_string = f.read()
 
+    print(len(file_string))
+    vli_int = l.encode_int(int(file_string))
+    print(len(vli_int))
+
+
+    # # Apriamo un file e cerchiamo di cifrarlo
+
     arc4 = ARC4('key')
-    cipher = arc4.encrypt(file_string)
+    binary_string = binascii.unhexlify(vli_int)
+    cipher = arc4.encrypt(binary_string)
     print(cipher)
 
 
-    arc4.decrypt(cipher)
-    print(cipher)
+    # arc4.decrypt(cipher)
+    # print(cipher)
 
-    print(type(cipher.decode("ascii")))
+
     f2 = open("Lena3.png", "w")
     f2.write(str(cipher.decode("utf-8")))
 

@@ -1,6 +1,7 @@
 import argparse
 import math
 import numpy as np
+from arc4 import ARC4
 from utils import *
 from scipy import fftpack
 from PIL import Image
@@ -184,4 +185,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+     main()
+
