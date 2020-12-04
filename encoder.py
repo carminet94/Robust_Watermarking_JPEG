@@ -9,6 +9,8 @@ from utils import *
 from scipy import fftpack
 from PIL import Image
 from huffman import HuffmanTree
+import sys
+import base64 as b64
 
 
 def quantize(block, component):
@@ -167,47 +169,27 @@ def main():
               'ac_c': H_AC_C.value_to_bitstring_table()}
 
 
+    write_to_file(output_file, dc, ac, blocks_count, tables)
 
 
 #############################################################
 
-    # Applichiamo la codifica VLI LSB128S
-    f = open("Lena2.png", "r+")
+#Read bitstream in which we have to apply VLI encoding
+    f = open("Lena2.jpeg", "r")
     file_string = f.read()
+    print(len(file_string))
 
-    #print(len(file_string))
-    vli_int = l.encode_int(int(file_string))
-    #print(vli_int)
-
-    # dc\x97\xa5\x8d\x88\xb3\xdc\xe0\
-    #     97\xa5\x8d\x88\xb3\xdc\xe0\
-    #
-
-
-    # # Apriamo un file e cerchiamo di cifrarlo
-
+#Encrypt bitstream
     arc4 = ARC4('key')
-
-    #Scrivo in un file VLI in byte
-    with open("myFileName", "wb") as f:
-        f.write(vli_int)
-
-    f_mfn = open("myFileName", "rb")
-    f_mfn_read = f_mfn.read()
-
-    cipher = arc4.encrypt(f_mfn_read)
+    cipher = arc4.encrypt(file_string)
     print(cipher)
-
-
-    a = arc4.decrypt(cipher)
-    print(a)
-
-## PROBLEMA: IN F2.WRITE NON RIUSCIAMO A SCRIVERE
-
-    f2 = open("Lena3.png", "w")
-    f2.write(str(cipher.decode("utf-8", "replace")))
-
-    write_to_file("Lena3.png", dc, ac, blocks_count, tables)
+#Calling twice ARC4 class because RC4 is a stream cipher
+    arc4 = ARC4('key')
+#Decrypting bitstream
+    decr = arc4.decrypt(cipher)
+#Writing decrypted bitstream to a file to test if it works
+    f2 = open('Lena3','w')
+    f2.write(str(help.decode("utf-8","replace")))
 #############################################################
 
 
