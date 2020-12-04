@@ -183,13 +183,16 @@ def main():
     arc4 = ARC4('key')
     cipher = arc4.encrypt(file_string)
     print(cipher)
+
 #Calling twice ARC4 class because RC4 is a stream cipher
     arc4 = ARC4('key')
+
 #Decrypting bitstream
-    decr = arc4.decrypt(cipher)
+    #decr = arc4.decrypt(cipher)
+
 #Writing decrypted bitstream to a file to test if it works
     f2 = open('Lena3','w')
-    f2.write(str(help.decode("utf-8","replace")))
+    f2.write(str(decr.decode("utf-8")))
 #############################################################
 
 
