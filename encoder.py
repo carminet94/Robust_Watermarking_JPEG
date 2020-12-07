@@ -12,6 +12,7 @@ from huffman import HuffmanTree
 import sys
 import base64 as b64
 import time
+import scramble as sc
 
 def quantize(block, component):
     q = load_quantization_table(component)
@@ -116,7 +117,8 @@ def main():
     input_file = args.input
     output_file = args.output
 
-    image = Image.open(input_file)
+    # We shuffle the image and then pass it to the compression process
+    image = Image.open(sc.shuffling(input_file))
     ycbcr = image.convert('YCbCr')
 
     npmat = np.array(ycbcr, dtype=np.uint8)
@@ -134,11 +136,6 @@ def main():
     dc = np.empty((blocks_count, 3), dtype=np.int32)
     ac = np.empty((blocks_count, 63, 3), dtype=np.int32)
 
-    #Init matrix to store chromas
-    Y = []
-    Cb = []
-    Cr = []
-    merged = []
 
     for i in range(0, rows, 8):
         for j in range(0, cols, 8):
@@ -157,26 +154,11 @@ def main():
                 quant_matrix = quantize(dct_matrix,
                                         'lum' if k == 0 else 'chrom')
 
-                #Append different chromas to different matrix
-                if k == 0:
-                    Y.append(quant_matrix)
-                    time.sleep(3)
-                elif k == 1:
-                    Cr.append(quant_matrix)
-                    time.sleep(3)
-
-                #Trying to merge Y and Cr into a single matrix so that we can permute that.
-                #merged.append(Y+Cr)
-
-
 
                 zz = block_to_zigzag(quant_matrix)
                 dc[block_index, k] = zz[0]
                 ac[block_index, :, k] = zz[1:]
 
-
-    #Y,Cb,Cr
-    #print(b)
 
 
     H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
@@ -197,29 +179,39 @@ def main():
     write_to_file(output_file, dc, ac, blocks_count, tables)
 
 
-#############################################################
 
-# #Read bitstream in which we have to apply VLI encoding
-#     f = open("Lena2.jpeg", "r")
-#     file_string = f.read()
-#     print(len(file_string))
-#
-# #Encrypt bitstream
-#     arc4 = ARC4('key')
-#     cipher = arc4.encrypt(file_string)
-#     print(cipher)
-#
-# #Calling twice ARC4 class because RC4 is a stream cipher
-#     arc4 = ARC4('key')
-#
-# #Decrypting bitstream
-#     #decr = arc4.decrypt(cipher)
-#
-# #Writing decrypted bitstream to a file to test if it works
-#     f2 = open('Lena3','w')
-#     f2.write(str(decr.decode("utf-8")))
-#############################################################
 
+
+###############################################################
+# REMINDER: FAREMO TUTTO IN UN FILE PERCHE FUNZIONA LA CIFRATURA
+# TUTTO NELLO STESSO FILE!
+
+# DOBBIAMO VEDERE COSA FARE
+###############################################################
+
+
+#Read bitstream in which we have to apply VLI encoding
+    f = open("Lena-compressed.png", "r")
+    file_string = f.read()
+    #print(len(file_string))
+
+#Encrypt bitstream
+    arc4 = ARC4('key')
+    cipher = arc4.encrypt(file_string)
+    print(cipher)
+
+#Calling twice ARC4 class because RC4 is a stream cipher
+    arc4 = ARC4('key')
+
+#Decrypting bitstream
+    decr = arc4.decrypt(cipher)
+    print(decr)
+
+#Writing decrypted bitstream to a file to test if it works
+    f2 = open('Lena3.png','w')
+    f2.write(str(decr.decode("utf-8")))
+
+######################################################
 
 if __name__ == "__main__":
     main()
