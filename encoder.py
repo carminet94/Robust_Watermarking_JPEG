@@ -3,15 +3,11 @@ import binascii
 import os
 import math
 import numpy as np
-import leb128s as l
 from arc4 import ARC4
 from utils import *
 from scipy import fftpack
 from PIL import Image
 from huffman import HuffmanTree
-import sys
-import base64 as b64
-import time
 import scramble as sc
 
 def quantize(block, component):
@@ -58,6 +54,10 @@ def run_length_encode(arr):
 
 
 def write_to_file(filepath, dc, ac, blocks_count, tables):
+    #Here we creates files that store bitstream composed of AC or DC only.
+    ac_file = open("ac_file.txt","w")
+    dc_file = open("dc_file.txt","w")
+
     try:
         f = open(filepath, 'w')
     except FileNotFoundError as e:
@@ -102,10 +102,21 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
             f.write(dc_table[category])
             f.write(int_to_binstr(dc[b, c]))
 
+            #Saving DC bitstream into another file
+            dc_file.write(dc_table[category])
+            dc_file.write(int_to_binstr(dc[b, c]))
+
             for i in range(len(symbols)):
                 f.write(ac_table[tuple(symbols[i])])
                 f.write(values[i])
+
+                #Saving AC bitstream into another file
+                ac_file.write(ac_table[tuple(symbols[i])])
+                ac_file.write(values[i])
     f.close()
+
+    dc_file.close()
+    ac_file.close()
 
 
 def main():
@@ -160,6 +171,14 @@ def main():
                 ac[block_index, :, k] = zz[1:]
 
 
+    #With 8x8 MCU, they both have a length of 4096 but the number of elements is different
+    #print(dc)
+    #print(ac)
+
+    #If we need decimal values of ac/dc, here we have it
+
+
+
 
     H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
     H_DC_C = HuffmanTree(np.vectorize(bits_required)(dc[:, 1:].flat))
@@ -183,33 +202,21 @@ def main():
 
 
 ###############################################################
-# REMINDER: FAREMO TUTTO IN UN FILE PERCHE FUNZIONA LA CIFRATURA
-# TUTTO NELLO STESSO FILE!
-
-# DOBBIAMO VEDERE COSA FARE
-###############################################################
-
 
 #Read bitstream in which we have to apply VLI encoding
-    f = open("Lena-compressed.png", "r")
+    f = open(output_file, "r+")
     file_string = f.read()
     #print(len(file_string))
 
 #Encrypt bitstream
     arc4 = ARC4('key')
     cipher = arc4.encrypt(file_string)
-    print(cipher)
-
-#Calling twice ARC4 class because RC4 is a stream cipher
-    arc4 = ARC4('key')
-
-#Decrypting bitstream
-    decr = arc4.decrypt(cipher)
-    print(decr)
 
 #Writing decrypted bitstream to a file to test if it works
-    f2 = open('Lena3.png','w')
-    f2.write(str(decr.decode("utf-8")))
+    arc4 = ARC4('key')
+    f.seek(0)
+    f.write(str(arc4.decrypt(cipher).decode("utf-8")))
+    f.close()
 
 ######################################################
 

@@ -1,6 +1,5 @@
 from PIL import Image
 import numpy as np
-from imageshuffle import imageshuffle as im
 from imageshuffle import imagescramble as ims
 
 def shuffling(image_name):
