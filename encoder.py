@@ -9,6 +9,8 @@ from scipy import fftpack
 from PIL import Image
 from huffman import HuffmanTree
 import scramble as sc
+import itertools
+import watermarking as wm
 
 def quantize(block, component):
     q = load_quantization_table(component)
@@ -57,6 +59,8 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
     #Here we creates files that store bitstream composed of AC or DC only.
     ac_file = open("ac_file.txt","w")
     dc_file = open("dc_file.txt","w")
+    #Y stands for luminance
+    dc_Y_only = open("dc_Y_only.txt","w")
 
     try:
         f = open(filepath, 'w')
@@ -90,7 +94,6 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
 
     # 32 bits for 'blocks_count'
     f.write(uint_to_binstr(blocks_count, 32))
-
     for b in range(blocks_count):
         for c in range(3):
             category = bits_required(dc[b, c])
@@ -102,21 +105,28 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
             f.write(dc_table[category])
             f.write(int_to_binstr(dc[b, c]))
 
-            #Saving DC bitstream into another file
+            # Saving DC bitstream into another file (all 3 components)
             dc_file.write(dc_table[category])
             dc_file.write(int_to_binstr(dc[b, c]))
+
+            #Saving DCs bitstream into another file (line by line and only Y component)
+            if(c==0):
+                dc_Y_only.write(dc_table[category])
+                dc_Y_only.write(int_to_binstr(dc[b,c]))
+                dc_Y_only.write("\n")
+
 
             for i in range(len(symbols)):
                 f.write(ac_table[tuple(symbols[i])])
                 f.write(values[i])
 
-                #Saving AC bitstream into another file
+                #Saving AC bitstream into another file (all 3 components)
                 ac_file.write(ac_table[tuple(symbols[i])])
                 ac_file.write(values[i])
     f.close()
-
     dc_file.close()
     ac_file.close()
+    dc_Y_only.close()
 
 
 def main():
@@ -171,15 +181,6 @@ def main():
                 ac[block_index, :, k] = zz[1:]
 
 
-    #With 8x8 MCU, they both have a length of 4096 but the number of elements is different
-    #print(dc)
-    #print(ac)
-
-    #If we need decimal values of ac/dc, here we have it
-
-
-
-
     H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
     H_DC_C = HuffmanTree(np.vectorize(bits_required)(dc[:, 1:].flat))
     H_AC_Y = HuffmanTree(
@@ -197,6 +198,10 @@ def main():
 
     write_to_file(output_file, dc, ac, blocks_count, tables)
 
+    #Watermarking process
+    wm.watermark("dc_Y_only.txt")
+
+
 
 
 
@@ -211,6 +216,7 @@ def main():
 #Encrypt bitstream
     arc4 = ARC4('key')
     cipher = arc4.encrypt(file_string)
+
 
 #Writing decrypted bitstream to a file to test if it works
     arc4 = ARC4('key')
