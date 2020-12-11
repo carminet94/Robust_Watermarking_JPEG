@@ -111,7 +111,6 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
 
             #Saving DCs bitstream into another file (line by line and only Y component)
             if(c==0):
-                dc_Y_only.write(dc_table[category])
                 dc_Y_only.write(int_to_binstr(dc[b,c]))
                 dc_Y_only.write("\n")
 
@@ -145,7 +144,7 @@ def main():
     npmat = np.array(ycbcr, dtype=np.uint8)
 
     rows, cols = npmat.shape[0], npmat.shape[1]
-
+    count = 0
     # block size: 8x8
     if rows % 8 == cols % 8 == 0:
         blocks_count = rows // 8 * cols // 8
@@ -156,7 +155,8 @@ def main():
     # dc is the top-left cell of the block, ac are all the other cells
     dc = np.empty((blocks_count, 3), dtype=np.int32)
     ac = np.empty((blocks_count, 63, 3), dtype=np.int32)
-
+    dc_Y_on = open("dc_Y_on.txt", "w")
+    image_hight,image_width= image.size
 
     for i in range(0, rows, 8):
         for j in range(0, cols, 8):
@@ -178,7 +178,19 @@ def main():
 
                 zz = block_to_zigzag(quant_matrix)
                 dc[block_index, k] = zz[0]
+
+                # We save the DC for Y component
+                if(k==0):
+                    dc_Y_on.write(str(dc[block_index, k]))
+                    dc_Y_on.write(" ")
+                    count += 1
+                    if(count==(image_width//8)):
+                        dc_Y_on.write('\n')
+                        count = 0
+
+
                 ac[block_index, :, k] = zz[1:]
+    dc_Y_on.close()
 
 
     H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
@@ -197,9 +209,16 @@ def main():
 
 
     write_to_file(output_file, dc, ac, blocks_count, tables)
-
+    #[[738 157 252]
+    #  [687 182 323]
+    #  [578 268 351]
+    #  ...
+    #  [663 434 413]
+    #  [684 568 243]
+    #  [776 592 256]]
+    # 1024
     #Watermarking process
-    wm.watermark("dc_Y_only.txt")
+    wm.watermark("dc_Y_on.txt")
 
 
 
