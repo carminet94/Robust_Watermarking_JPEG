@@ -156,18 +156,6 @@ def main():
     parser.add_argument("input", help="path to the input image")
     args = parser.parse_args()
 
-    # # We open the encrypted file, decrypt it and then we decode!
-    # f = open(args.input, "r")
-    # file_string = f.read()
-    # # Calling twice ARC4 class because RC4 is a stream cipher
-    # arc4 = ARC4('key')
-    # # Decrypting bitstream
-    # decr = arc4.decrypt(file_string)
-    # # Writing the image back again, but decrypted
-    # f2 = open('Lena4.jpeg', 'w')
-    # f2.write(str(decr.decode("utf-8")))
-    # f2.close()
-
     dc, ac, tables, blocks_count = read_image_file(args.input)
 
     # assuming that the block is a 8x8 square

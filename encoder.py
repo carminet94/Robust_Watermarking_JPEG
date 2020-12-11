@@ -221,29 +221,5 @@ def main():
     wm.watermark("dc_Y_on.txt")
 
 
-
-
-
-
-###############################################################
-
-#Read bitstream in which we have to apply VLI encoding
-    f = open(output_file, "r+")
-    file_string = f.read()
-    #print(len(file_string))
-
-#Encrypt bitstream
-    arc4 = ARC4('key')
-    cipher = arc4.encrypt(file_string)
-
-
-#Writing decrypted bitstream to a file to test if it works
-    arc4 = ARC4('key')
-    f.seek(0)
-    f.write(str(arc4.decrypt(cipher).decode("utf-8")))
-    f.close()
-
-######################################################
-
 if __name__ == "__main__":
     main()
