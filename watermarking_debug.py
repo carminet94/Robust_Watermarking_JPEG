@@ -13,7 +13,7 @@ def watermark(dcfile):
 
     #Indexes to save where watermark's bits are placed
     index = 0
-    index_rows = -1
+    index_rows = -2
 
     # File in which each line is a DC of a different MCU
     f = open(dcfile, "r")
@@ -32,7 +32,7 @@ def watermark(dcfile):
         # DCs values
         DC0 = [int(i) for i in line1.split()]
         DC1 = [int(i) for i in line2.split()]
-        index_rows += 1
+        index_rows += 2
 
         for i in range(0,len(DC0)-1, 2):
             DC00 = DC0[i]
@@ -71,9 +71,14 @@ def watermark(dcfile):
                         index += 1
                 else:
                     continue
-        dc_Y_modified.write(str(DC0))
+        DC0M = [str(int) for int in DC0]
+        DC1M = [str(int) for int in DC1]
+        raw1 = " ".join(DC0M)
+        raw2 = " ".join(DC1M)
+
+        dc_Y_modified.write(raw1)
         dc_Y_modified.write('\n')
-        dc_Y_modified.write(str(DC1))
+        dc_Y_modified.write(raw2)
         dc_Y_modified.write('\n')
     if(index!=len(bitwatermark)):
        raise ValueError(("Error no watermark"))
@@ -83,7 +88,7 @@ def watermark(dcfile):
 
     #Indexes to iterate through the file and find watermark's bits
     index = 0
-    index_rows = -1
+    index_rows = -2
 
     #Extracted bits are inserted in this array
     bitdewatermark=[]
@@ -100,12 +105,10 @@ def watermark(dcfile):
     #Iterate through file lines 2 by 2
     for line1, line2 in itertools.zip_longest(*[dc_Y_modified] * 2):
         # DCs values
-        for x in line1.replace("[","").replace("]","").split(","):
-            DC0.append(x)
-        for x in line2.replace("[","").replace("]","").split(","):
-            DC1.append(x)
+        DC0 = [int(i) for i in line1.split()]
+        DC1 = [int(i) for i in line2.split()]
         #print(DC0)
-        index_rows += 1
+        index_rows += 2
 
         #Iterate 2 by 2 through the obtained lines
         for i in range(0,len(DC0)-1, 2):
@@ -116,14 +119,18 @@ def watermark(dcfile):
             average = (DC11+DC22+DC33)/3
             if(modified_blocks[index][0]==index_rows and modified_blocks[index][1]==i):
                 if(DC00>average):
-                    print("Bit tro: 1" + ", DC00: " + str(math.floor(DC00)) + ", DC1-2-3: "+ str((math.floor(DC11))) + "," + str((math.floor(DC22))) + "," + str((math.floor(DC33))) +  ", Media: " + str(math.floor((DC11 + DC22 + DC33) / 3)) + ", blocco ?????")
+                    print(" i: " + str(i) + " index : " + str(index) + " index row : " + str(index_rows))
+                    print("Bit tro: 1" + ", DC00: " + str(math.floor(DC00)) + ", DC1-2-3: "+ str((math.floor(DC11))) + "," + str((math.floor(DC22))) + "," + str((math.floor(DC33))) +  ", Media: " + str(math.floor((DC11 + DC22 + DC33) / 3)) + ", "+ "[ "+str(modified_blocks[index][0])+", "+ str(modified_blocks[index][1])+" ]")
                     #print("Average value of DC11,DC22,DC33: " + str(average))
                     bitdewatermark.append(1)
                     index += 1
+
                 else:
-                    print("Bit tro: 0" + ", DC00: " + str(math.floor(DC00)) + ", DC1-2-3: "+ str((math.floor(DC11))) + "," + str((math.floor(DC22))) + "," + str((math.floor(DC33))) +  ", Media: " + str(math.floor((DC11 + DC22 + DC33) / 3)) + ", blocco ?????")
+                    print(" i: " + str(i) + " index : " + str(index) + " index row : " + str(index_rows))
+                    print("Bit tro: 0" + ", DC00: " + str(math.floor(DC00)) + ", DC1-2-3: "+ str((math.floor(DC11))) + "," + str((math.floor(DC22))) + "," + str((math.floor(DC33))) +  ", Media: " + str(math.floor((DC11 + DC22 + DC33) / 3)) + ", " + "[ "+str(modified_blocks[index][0])+", "+ str(modified_blocks[index][1])+" ]")
                     bitdewatermark.append(0)
                     index += 1
+
             if(index == len(modified_blocks)):
                 break
         if (index == len(modified_blocks)):
