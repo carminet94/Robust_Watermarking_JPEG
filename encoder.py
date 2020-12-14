@@ -57,10 +57,9 @@ def run_length_encode(arr):
 
 def write_to_file(filepath, dc, ac, blocks_count, tables):
     #Here we creates files that store bitstream composed of AC or DC only.
-    ac_file = open("ac_file.txt","w")
-    dc_file = open("dc_file.txt","w")
     #Y stands for luminance
     dc_Y_only = open("dc_Y_only.txt","w")
+    ac_Y_only = open("ac_Y_only.txt","w")
 
     try:
         f = open(filepath, 'w')
@@ -105,10 +104,6 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
             f.write(dc_table[category])
             f.write(int_to_binstr(dc[b, c]))
 
-            # Saving DC bitstream into another file (all 3 components)
-            dc_file.write(dc_table[category])
-            dc_file.write(int_to_binstr(dc[b, c]))
-
             #Saving DCs bitstream into another file (line by line and only Y component)
             if(c==0):
                 dc_Y_only.write(int_to_binstr(dc[b,c]))
@@ -118,13 +113,10 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
             for i in range(len(symbols)):
                 f.write(ac_table[tuple(symbols[i])])
                 f.write(values[i])
+                if (c == 0):
+                    ac_Y_only.write(values[i])
 
-                #Saving AC bitstream into another file (all 3 components)
-                ac_file.write(ac_table[tuple(symbols[i])])
-                ac_file.write(values[i])
     f.close()
-    dc_file.close()
-    ac_file.close()
     dc_Y_only.close()
 
 
