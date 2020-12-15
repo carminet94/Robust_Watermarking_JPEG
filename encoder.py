@@ -147,8 +147,9 @@ def main():
     # dc is the top-left cell of the block, ac are all the other cells
     dc = np.empty((blocks_count, 3), dtype=np.int32)
     ac = np.empty((blocks_count, 63, 3), dtype=np.int32)
+
     dc_Y = open("dc_Y.txt", "w")
-    image_hight,image_width= image.size
+    image_hight,image_width = image.size
 
     for i in range(0, rows, 8):
         for j in range(0, cols, 8):
@@ -167,13 +168,13 @@ def main():
                 quant_matrix = quantize(dct_matrix,
                                         'lum' if k == 0 else 'chrom')
 
-
                 zz = block_to_zigzag(quant_matrix)
                 dc[block_index, k] = zz[0]
 
                 # We save the DC for Y component
                 if(k==0):
                     dc_Y.write(str(dc[block_index, k]))
+
                     dc_Y.write(" ")
                     count += 1
                     if(count==(image_width//8)):
@@ -184,6 +185,31 @@ def main():
                 ac[block_index, :, k] = zz[1:]
     dc_Y.close()
 
+    #Watermarking process
+    wm.watermark("dc_Y.txt")
+
+    # Overwriting DC coefficient of luminance with modified DC coefficient
+    block_index = 0
+    index_columns = 0
+
+    dc_Y_modified = open("dc_Y_modified.txt", "r")
+
+    # Iteration through dc_Y_modified.txt 1 lines each time
+    for line1 in dc_Y_modified:
+        intDC_modified = [int(i) for i in line1.split()]
+
+        # Overwrite dc[block-index,0] with dc_Y_modified values
+        for index_columns in range(0, len(intDC_modified)):
+            for i in range(0, rows, 8):
+                for j in range(0, cols, 8):
+                    try:
+                        block_index += 1
+                    except NameError:
+                        block_index = 0
+                        for k in range(3):
+
+                            dc[block_index, 0] = intDC_modified[index_columns]
+    dc_Y_modified.close()
 
     H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
     H_DC_C = HuffmanTree(np.vectorize(bits_required)(dc[:, 1:].flat))
@@ -201,8 +227,9 @@ def main():
 
 
     write_to_file(output_file, dc, ac, blocks_count, tables)
-    #Watermarking process
-    wm.watermark("dc_Y.txt")
+
+
+
 
 
 if __name__ == "__main__":
