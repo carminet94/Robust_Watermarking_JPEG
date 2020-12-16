@@ -120,6 +120,7 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
     dc_Y_only.close()
 
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="path to the input image")
@@ -130,7 +131,9 @@ def main():
     output_file = args.output
 
     # We shuffle the image and then pass it to the compression process
-    image = Image.open(sc.shuffling(input_file))
+    enc = sc.encrypt(input_file, 12345)
+
+    image = Image.open("image-encrypted.png")
 
     # We convert RGB image in YCbCr image
     ycbcr = image.convert('YCbCr')

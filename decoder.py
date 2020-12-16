@@ -5,6 +5,7 @@ from arc4 import ARC4
 from utils import *
 from scipy import fftpack
 from PIL import Image
+import scramble as sc
 
 
 class JPEGFileReader:
@@ -181,7 +182,14 @@ def main():
 
     image = Image.fromarray(npmat, 'YCbCr')
     image = image.convert('RGB')
+    image.save("Lena2.png")
     image.show()
+    image.close()
+
+    sc.decrypt("Lena2.png", 12345)
+    image = Image.open("Lena2.png")
+    image.show()
+
 
 
 if __name__ == "__main__":
