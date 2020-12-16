@@ -183,11 +183,11 @@ def main():
     image = Image.fromarray(npmat, 'YCbCr')
     image = image.convert('RGB')
     image.save("Lena2.png")
-    image.show()
+    #image.show()
     image.close()
 
     sc.decrypt("Lena2.png", 12345)
-    image = Image.open("Lena2.png")
+    image = Image.open("image-decrypted.png")
     image.show()
 
 

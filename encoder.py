@@ -121,132 +121,132 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
 
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input", help="path to the input image")
-    parser.add_argument("output", help="path to the output image")
-    args = parser.parse_args()
-
-    input_file = args.input
-    output_file = args.output
-
-    # We shuffle the image and then pass it to the compression process
-    enc = sc.encrypt(input_file, 12345)
-
-    image = Image.open("image-encrypted.png")
-
-    # We convert RGB image in YCbCr image
-    ycbcr = image.convert('YCbCr')
-
-    # "npmat" is tridimensional array
-    npmat = np.array(ycbcr, dtype=np.uint8)
-
-    rows, cols = npmat.shape[0], npmat.shape[1]
-    count = 0
-    # check image size: 8x8
-    if rows % 8 == cols % 8 == 0:
-        blocks_count = rows // 8 * cols // 8
-    else:
-        raise ValueError(("the width and height of the image "
-                          "should both be mutiples of 8"))
-
-    # dc is the top-left cell of the block, ac are all the other cells
-
-    # "dc" is bidimensional array
-    dc = np.empty((blocks_count, 3), dtype=np.int32)
-
-    # "ac" is tridimensional array
-    ac = np.empty((blocks_count, 63, 3), dtype=np.int32)
-
-    dc_Y = open("dc_Y.txt", "w")
-    image_hight,image_width = image.size
-
-    for i in range(0, rows, 8):
-        for j in range(0, cols, 8):
-            try:
-                block_index += 1
-            except NameError:
-                block_index = 0
-
-            for k in range(3):
-                # split 8x8 block and center the data range on zero
-                # [0, 255] --> [-128, 127]
-                # "block" is bidimensional array
-                block = npmat[i:i+8, j:j+8, k] - 128
-
-
-                dct_matrix = dct_2d(block)
-                quant_matrix = quantize(dct_matrix,
-                                        'lum' if k == 0 else 'chrom')
-
-                zz = block_to_zigzag(quant_matrix)
-                # fills the array with the previously transformed and quantized DCs
-                dc[block_index, k] = zz[0]
-
-                # We save the DC for Y component in a file "dc_Y.txt"
-                if(k==0):
-                    dc_Y.write(str(dc[block_index, k]))
-                    dc_Y.write(" ")
-                    count += 1
-                    if(count==(image_width//8)):
-                        dc_Y.write('\n')
-                        count = 0
-
-                # fills the array with the previously transformed and quantized ACs
-                ac[block_index, :, k] = zz[1:]
-    dc_Y.close()
-
-    #Watermarking process
-    wm.watermark("dc_Y.txt")
-
-    # Overwriting DC coefficient of luminance with modified DC coefficient
-    block_index = 0
-    index_columns = 0
-
-    dc_Y_modified = open("dc_Y_modified.txt", "r")
-
-    # Iteration through dc_Y_modified.txt 1 lines each time
-    for line1 in dc_Y_modified:
-        intDC_modified = [int(i) for i in line1.split()]
-
-        # Overwrite dc[block-index,0] with dc_Y_modified values
-        for index_columns in range(0, len(intDC_modified)):
-            for i in range(0, rows, 8):
-                for j in range(0, cols, 8):
-                    try:
-                        block_index += 1
-                    except NameError:
-                        block_index = 0
-                        for k in range(3):
-
-                            dc[block_index, 0] = intDC_modified[index_columns]
-    dc_Y_modified.close()
-
-    H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
-    H_DC_C = HuffmanTree(np.vectorize(bits_required)(dc[:, 1:].flat))
-    H_AC_Y = HuffmanTree(
-            flatten(run_length_encode(ac[i, :, 0])[0]
-                    for i in range(blocks_count)))
-    H_AC_C = HuffmanTree(
-            flatten(run_length_encode(ac[i, :, j])[0]
-                    for i in range(blocks_count) for j in [1, 2]))
-
-    tables = {'dc_y': H_DC_Y.value_to_bitstring_table(),
-              'ac_y': H_AC_Y.value_to_bitstring_table(),
-              'dc_c': H_DC_C.value_to_bitstring_table(),
-              'ac_c': H_AC_C.value_to_bitstring_table()}
-
-    print("BITSTREAM")
-    print(tables)
-    wm.watermark("dc_Y.txt")
-    dc_Y_modified = open("dc_Y_modified.txt", "w")
-
-    print(dc)
-    write_to_file(output_file, dc, ac, blocks_count, tables)
-
-
+# def main():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("input", help="path to the input image")
+#     parser.add_argument("output", help="path to the output image")
+#     args = parser.parse_args()
+#
+#     input_file = args.input
+#     output_file = args.output
+#
+#     # We shuffle the image and then pass it to the compression process
+#     enc = sc.encrypt(input_file, 12345)
+#
+#     image = Image.open("image-encrypted.png")
+#
+#     # We convert RGB image in YCbCr image
+#     ycbcr = image.convert('YCbCr')
+#
+#     # "npmat" is tridimensional array
+#     npmat = np.array(ycbcr, dtype=np.uint8)
+#
+#     rows, cols = npmat.shape[0], npmat.shape[1]
+#     count = 0
+#     # check image size: 8x8
+#     if rows % 8 == cols % 8 == 0:
+#         blocks_count = rows // 8 * cols // 8
+#     else:
+#         raise ValueError(("the width and height of the image "
+#                           "should both be mutiples of 8"))
+#
+#     # dc is the top-left cell of the block, ac are all the other cells
+#
+#     # "dc" is bidimensional array
+#     dc = np.empty((blocks_count, 3), dtype=np.int32)
+#
+#     # "ac" is tridimensional array
+#     ac = np.empty((blocks_count, 63, 3), dtype=np.int32)
+#
+#     dc_Y = open("dc_Y.txt", "w")
+#     image_hight,image_width = image.size
+#
+#     for i in range(0, rows, 8):
+#         for j in range(0, cols, 8):
+#             try:
+#                 block_index += 1
+#             except NameError:
+#                 block_index = 0
+#
+#             for k in range(3):
+#                 # split 8x8 block and center the data range on zero
+#                 # [0, 255] --> [-128, 127]
+#                 # "block" is bidimensional array
+#                 block = npmat[i:i+8, j:j+8, k] - 128
+#
+#
+#                 dct_matrix = dct_2d(block)
+#                 quant_matrix = quantize(dct_matrix,
+#                                         'lum' if k == 0 else 'chrom')
+#
+#                 zz = block_to_zigzag(quant_matrix)
+#                 # fills the array with the previously transformed and quantized DCs
+#                 dc[block_index, k] = zz[0]
+#
+#                 # We save the DC for Y component in a file "dc_Y.txt"
+#                 if(k==0):
+#                     dc_Y.write(str(dc[block_index, k]))
+#                     dc_Y.write(" ")
+#                     count += 1
+#                     if(count==(image_width//8)):
+#                         dc_Y.write('\n')
+#                         count = 0
+#
+#                 # fills the array with the previously transformed and quantized ACs
+#                 ac[block_index, :, k] = zz[1:]
+#     dc_Y.close()
+#
+#     #Watermarking process
+#     wm.watermark("dc_Y.txt")
+#
+#     # Overwriting DC coefficient of luminance with modified DC coefficient
+#     block_index = 0
+#     index_columns = 0
+#
+#     dc_Y_modified = open("dc_Y_modified.txt", "r")
+#
+#     # Iteration through dc_Y_modified.txt 1 lines each time
+#     for line1 in dc_Y_modified:
+#         intDC_modified = [int(i) for i in line1.split()]
+#
+#         # Overwrite dc[block-index,0] with dc_Y_modified values
+#         for index_columns in range(0, len(intDC_modified)):
+#             for i in range(0, rows, 8):
+#                 for j in range(0, cols, 8):
+#                     try:
+#                         block_index += 1
+#                     except NameError:
+#                         block_index = 0
+#                         for k in range(3):
+#
+#                             dc[block_index, 0] = intDC_modified[index_columns]
+#     dc_Y_modified.close()
+#
+#     H_DC_Y = HuffmanTree(np.vectorize(bits_required)(dc[:, 0]))
+#     H_DC_C = HuffmanTree(np.vectorize(bits_required)(dc[:, 1:].flat))
+#     H_AC_Y = HuffmanTree(
+#             flatten(run_length_encode(ac[i, :, 0])[0]
+#                     for i in range(blocks_count)))
+#     H_AC_C = HuffmanTree(
+#             flatten(run_length_encode(ac[i, :, j])[0]
+#                     for i in range(blocks_count) for j in [1, 2]))
+#
+#     tables = {'dc_y': H_DC_Y.value_to_bitstring_table(),
+#               'ac_y': H_AC_Y.value_to_bitstring_table(),
+#               'dc_c': H_DC_C.value_to_bitstring_table(),
+#               'ac_c': H_AC_C.value_to_bitstring_table()}
+#
+#     print("BITSTREAM")
+#     print(tables)
+#     wm.watermark("dc_Y.txt")
+#     dc_Y_modified = open("dc_Y_modified.txt", "w")
+#
+#     print(dc)
+#     write_to_file(output_file, dc, ac, blocks_count, tables)
 
 
 
-if __name__ == "__main__":
-    main()
+
+
+# if __name__ == "__main__":
+#     main()
