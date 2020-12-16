@@ -62,7 +62,7 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
     ac_Y_only = open("ac_Y_only.txt","w")
 
     try:
-        f = open(filepath, 'w')
+        f = open(filepath, 'w') # LenaOutput.png
     except FileNotFoundError as e:
         raise FileNotFoundError(
                 "No such directory: {}".format(
@@ -131,13 +131,16 @@ def main():
 
     # We shuffle the image and then pass it to the compression process
     image = Image.open(sc.shuffling(input_file))
+
+    # We convert RGB image in YCbCr image
     ycbcr = image.convert('YCbCr')
 
+    # "npmat" is tridimensional array
     npmat = np.array(ycbcr, dtype=np.uint8)
 
     rows, cols = npmat.shape[0], npmat.shape[1]
     count = 0
-    # block size: 8x8
+    # check image size: 8x8
     if rows % 8 == cols % 8 == 0:
         blocks_count = rows // 8 * cols // 8
     else:
@@ -145,7 +148,11 @@ def main():
                           "should both be mutiples of 8"))
 
     # dc is the top-left cell of the block, ac are all the other cells
+
+    # "dc" is bidimensional array
     dc = np.empty((blocks_count, 3), dtype=np.int32)
+
+    # "ac" is tridimensional array
     ac = np.empty((blocks_count, 63, 3), dtype=np.int32)
 
     dc_Y = open("dc_Y.txt", "w")
@@ -161,6 +168,7 @@ def main():
             for k in range(3):
                 # split 8x8 block and center the data range on zero
                 # [0, 255] --> [-128, 127]
+                # "block" is bidimensional array
                 block = npmat[i:i+8, j:j+8, k] - 128
 
 
@@ -169,19 +177,19 @@ def main():
                                         'lum' if k == 0 else 'chrom')
 
                 zz = block_to_zigzag(quant_matrix)
+                # fills the array with the previously transformed and quantized DCs
                 dc[block_index, k] = zz[0]
 
-                # We save the DC for Y component
+                # We save the DC for Y component in a file "dc_Y.txt"
                 if(k==0):
                     dc_Y.write(str(dc[block_index, k]))
-
                     dc_Y.write(" ")
                     count += 1
                     if(count==(image_width//8)):
                         dc_Y.write('\n')
                         count = 0
 
-
+                # fills the array with the previously transformed and quantized ACs
                 ac[block_index, :, k] = zz[1:]
     dc_Y.close()
 
@@ -225,7 +233,12 @@ def main():
               'dc_c': H_DC_C.value_to_bitstring_table(),
               'ac_c': H_AC_C.value_to_bitstring_table()}
 
+    print("BITSTREAM")
+    print(tables)
+    wm.watermark("dc_Y.txt")
+    dc_Y_modified = open("dc_Y_modified.txt", "w")
 
+    print(dc)
     write_to_file(output_file, dc, ac, blocks_count, tables)
 
 
