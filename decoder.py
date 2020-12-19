@@ -7,6 +7,10 @@ from scipy import fftpack
 from PIL import Image
 import scramble as sc
 
+def encqualcosa():
+
+    return enc
+enc = sc.scramble()
 
 class JPEGFileReader:
     TABLE_SIZE_BITS = 16

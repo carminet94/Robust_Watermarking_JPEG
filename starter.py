@@ -24,10 +24,9 @@ def main():
     input_file = args.input
     output_file = args.output
 
-    # We shuffle the image and then pass it to the compression process
-    enc = sc.encrypt(input_file, 12345)
+    ac_enc = []
 
-    image = Image.open("image-encrypted.png")
+    image = Image.open(input_file)
 
     # We convert RGB image in YCbCr image
     ycbcr = image.convert('YCbCr')
@@ -87,7 +86,30 @@ def main():
 
                 # fills the array with the previously transformed and quantized ACs
                 ac[block_index, :, k] = zz[1:]
+
     dc_Y.close()
+
+# From here we started to modify
+
+    print(type(ac))
+    for x in ac:
+        ac_enc.append(x)
+    ac_enc = np.asarray(ac_enc)
+
+
+    ac_enc = tuple(map(tuple, ac_enc))
+    print(ac_enc)
+    ac_enc = np.reshape(ac_enc, (image.size[1], image.size[0], 3))
+    ac_enc = ac_enc.astype(np.uint8)
+
+    Image.fromarray(ac_enc[:, :, 0], "L").show()
+    Image.fromarray(ac_enc[:, :, 1], "L").show()
+    Image.fromarray(ac_enc[:, :, 2], "L").show()
+
+
+    #ac_enc = np.asarray
+    ac = sc.encrypt(ac_enc,"12345")
+# End modify
 
     # Watermarking process
     wm.watermark("dc_Y.txt")
