@@ -7,6 +7,8 @@ def encrypt(num_array, key):
     ar = np.asarray(img)
     print(ar)
 
+
+
     # We scrambles image block-by-block. Size of input data should be multiples of size of block.
     print("Preimage shuffle")
     #s = ims.RandBlock(key, [16, 16],nb_bits = 4, rev_mode = ims.REV_NONE, rev_ratio = 0.5 )

@@ -24,7 +24,6 @@ def main():
     input_file = args.input
     output_file = args.output
 
-    ac_enc = []
 
     image = Image.open(input_file)
 
@@ -91,21 +90,33 @@ def main():
 
 # From here we started to modify
 
-    print(type(ac))
+    index1 = 0
+    index2 = 0
+    index3 = 0
+    ac_enc = np.zeros((blocks_count,63,3))
     for x in ac:
-        ac_enc.append(x)
-    ac_enc = np.asarray(ac_enc)
+        for k in x:
+            for m in k:
+                #m = m+128
+                ac_enc[index1][index2][index3] = m
+                index3 += 1
+            index3 = 0
+            index2 += 1
+        index2 = 0
+        index1 += 1
 
-
-    ac_enc = tuple(map(tuple, ac_enc))
-    print(ac_enc)
-    ac_enc = np.reshape(ac_enc, (image.size[1], image.size[0], 3))
     ac_enc = ac_enc.astype(np.uint8)
+    print(ac_enc)
 
-    Image.fromarray(ac_enc[:, :, 0], "L").show()
-    Image.fromarray(ac_enc[:, :, 1], "L").show()
-    Image.fromarray(ac_enc[:, :, 2], "L").show()
 
+    #ac_enc = np.reshape(ac_enc, (image.size[1], image.size[0], 3))
+    #ac_enc = ac_enc.astype(np.uint8)
+
+    Image.fromarray(ac_enc).show()
+    #Image.fromarray(ac_enc[:, :, 1], "L").show()
+    #Image.fromarray(ac_enc[:, :, 2], "L").show()
+
+    #Fare reshape di ac_enc e poi costruirlo come un'immagine
 
     #ac_enc = np.asarray
     ac = sc.encrypt(ac_enc,"12345")
