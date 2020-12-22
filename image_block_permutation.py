@@ -45,7 +45,7 @@ def permutation(image_to_process, side):
 
 
     ################################################################################################
-    # Qui creo una nuova immagine a partire dall'immagine permutata, con i blocchi permutati,
+    # Qui creo una nuova immagine avente con i blocchi permutati,
     # andando a trasformare ogni riga in un blocco dell'immagine
 
     image_output_permutation_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)

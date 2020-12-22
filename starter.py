@@ -12,6 +12,7 @@ import scramble as sc
 import itertools
 import watermarking as wm
 import encoder
+import image_block_permutation as img_permutation
 
 
 
@@ -24,6 +25,7 @@ def main():
     input_file = args.input
     output_file = args.output
 
+    img_permutation.permutation("lena.png", 16)
 
     image = Image.open(input_file)
 
