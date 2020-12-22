@@ -101,6 +101,6 @@ def permutation(image_to_process, side):
 
 
 
-def dePermutation():
+def dePermutation(image_to_depermutation, key):
     # TODO rendere globali le variabili pixel_array ed array_permutation in modo tale da poter scrivere in questa funzione la parte della depermutazione della funzione precedente
     return

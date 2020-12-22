@@ -25,7 +25,11 @@ def main():
     input_file = args.input
     output_file = args.output
 
-    img_permutation.permutation("lena.png", 16)
+    # img_permutation.permutation("lena.png", 16)
+    # key = 1234567899
+    # img_encrypt.encryption("image_output_permutation.png", key)
+    # img_encrypt_decrypt.decryption("image_AC_encrypt.png", key)
+    # img_permutation.dePermutation("image_decypher.png", key)
 
     image = Image.open(input_file)
 

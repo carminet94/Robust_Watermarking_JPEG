@@ -71,7 +71,7 @@ def encryption(image_to_encrypt, key):
                 image_output_array_3d[i:i + side, j:j + side, k] = block
             block_index += 1
     image = Image.fromarray(image_output_array_3d)
-    image.save("image_AC_cypher.png")
+    image.save("image_AC_encrypt.png")
     image.close()
 
 
