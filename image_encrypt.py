@@ -18,7 +18,7 @@ def encryption(image_to_encrypt, key):
         blocks_count = rows // side * cols // side
     else:
         raise ValueError(("ERRORE: la larghezza e l'altezza dell'immagine"
-                          "deve essere un multiplo del numero n = {} fornito in input".format(8)))
+                          "deve essere un multiplo del numero n = {} fornito in input".format(side)))
 
 
 
