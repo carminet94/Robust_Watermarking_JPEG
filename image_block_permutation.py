@@ -26,7 +26,7 @@ def permutation(image_to_process, side):
 
 
 
-    ################################################################################################
+    ####################################  P E R M U T A Z I O N E  #################################################
     # Qui trasformo ogni blocco quadrato dell'immagine in una riga, quindi effettua la copia dei pixel dell'immagine
 
     block_index = 0
@@ -44,9 +44,9 @@ def permutation(image_to_process, side):
 
 
 
-    ################################################################################################
-    # Qui creo una nuova immagine avente con i blocchi permutati,
-    # andando a trasformare ogni riga in un blocco dell'immagine
+    ##################
+    # Qui creo una nuova immagine avente con i blocchi permutati, andando a trasformare ogni riga 
+    # in un blocco dell'immagine
 
     image_output_permutation_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
 
@@ -74,7 +74,7 @@ def permutation(image_to_process, side):
 
 
 
-    ################################################################################################
+    ###################################  D E P E R M U T A Z I O N E  #############################################
     # Qui ricreo l'immagine originale a partire dall'immagine permutata, effettuando la depermutazione dei blocchi
 
     image_output_original_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
@@ -102,5 +102,5 @@ def permutation(image_to_process, side):
 
 
 def dePermutation(image_to_depermutation, key):
-    # TODO rendere globali le variabili pixel_array ed array_permutation in modo tale da poter scrivere in questa funzione la parte della depermutazione della funzione precedente
+    # TODO rendere globali le variabili "pixel_array" ed "array_permutation" in modo tale da poter scrivere in questa funzione la parte della depermutazione della funzione precedente
     return
