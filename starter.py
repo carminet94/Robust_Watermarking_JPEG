@@ -13,6 +13,7 @@ import itertools
 import watermarking as wm
 import encoder
 import image_block_permutation as img_permutation
+import image_encrypt as img_encrypt
 
 
 
@@ -31,9 +32,16 @@ def main():
     # img_encrypt_decrypt.decryption("image_AC_encrypt.png", key)
     # img_permutation.dePermutation("image_decypher.png", key)
 
-    image = Image.open(input_file)
 
-    # We convert RGB image in YCbCr image
+    image_name = img_permutation.permutation(input_file, 16)
+    #img_permutation.dePermutation(image_name, 16)
+
+
+    key = 1234567899
+    enc = img_encrypt.encryption(image_name, key)
+    #decr = img_encrypt.decryption("image_AC_encrypt.png",key)
+    #We convert RGB image in YCbCr image
+    image = Image.open(enc)
     ycbcr = image.convert('YCbCr')
 
     # "npmat" is tridimensional array
@@ -94,39 +102,6 @@ def main():
 
     dc_Y.close()
 
-# From here we started to modify
-
-    index1 = 0
-    index2 = 0
-    index3 = 0
-    ac_enc = np.zeros((blocks_count,63,3))
-    for x in ac:
-        for k in x:
-            for m in k:
-                #m = m+128
-                ac_enc[index1][index2][index3] = m
-                index3 += 1
-            index3 = 0
-            index2 += 1
-        index2 = 0
-        index1 += 1
-
-    ac_enc = ac_enc.astype(np.uint8)
-    print(ac_enc)
-
-
-    #ac_enc = np.reshape(ac_enc, (image.size[1], image.size[0], 3))
-    #ac_enc = ac_enc.astype(np.uint8)
-
-    Image.fromarray(ac_enc).show()
-    #Image.fromarray(ac_enc[:, :, 1], "L").show()
-    #Image.fromarray(ac_enc[:, :, 2], "L").show()
-
-    #Fare reshape di ac_enc e poi costruirlo come un'immagine
-
-    #ac_enc = np.asarray
-    ac = sc.encrypt(ac_enc,"12345")
-# End modify
 
     # Watermarking process
     wm.watermark("dc_Y.txt")
@@ -167,12 +142,11 @@ def main():
               'dc_c': H_DC_C.value_to_bitstring_table(),
               'ac_c': H_AC_C.value_to_bitstring_table()}
 
-    print("BITSTREAM")
-    print(tables)
+
     wm.watermark("dc_Y.txt")
     dc_Y_modified = open("dc_Y_modified.txt", "w")
 
-    print(dc)
+
     encoder.write_to_file(output_file, dc, ac, blocks_count, tables)
 
 if __name__ == "__main__":

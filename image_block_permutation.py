@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+import random
 
 
 def permutation(image_to_process, side):
@@ -50,10 +51,10 @@ def permutation(image_to_process, side):
 
     image_output_permutation_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
 
-    array_permutation = []
-    for number in range(blocks_count):
-         array_permutation.append(number)
-    array_permutation = np.random.permutation(array_permutation)
+
+    random.seed(0)
+    array_permutation = random.sample(range(blocks_count),blocks_count)
+
 
     block_index = 0
     for i in range(0, rows, side):
@@ -67,28 +68,95 @@ def permutation(image_to_process, side):
                 image_output_permutation_array_3d[i:i + side, j:j + side, k] = block
             block_index += 1
 
+
     image = Image.fromarray(image_output_permutation_array_3d)
     image.save("image_output_permutation.png")
     image.close()
 
 
+    #
+    # ###################################  D E P E R M U T A Z I O N E  #############################################
+    # # Qui ricreo l'immagine originale a partire dall'immagine permutata, effettuando la depermutazione dei blocchi
+    #
+    # image_output_original_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
+    #
+    # array_permutation = np.sort(array_permutation)
+    # print(array_permutation)
+    # block_index = 0
+    # for i in range(0, rows, side):
+    #     for j in range(0, cols, side):
+    #         for k in range(3):
+    #             ii = 0
+    #             for r in range(0, side):
+    #                 for c in range(0, side):
+    #                     block[r][c] = pixel_array[array_permutation[block_index], ii, k]
+    #
+    #                     ii += 1
+    #             image_output_original_array_3d[i:i + side, j:j + side, k] = block
+    #         block_index += 1
+    # print(pixel_array)
+    # image = Image.fromarray(image_output_original_array_3d)
+    # image.save("image_output_original.png")
+    # image.close()
+
+    #return pixel_array , array_permutation
+    return "image_output_permutation.png"
 
 
-    ###################################  D E P E R M U T A Z I O N E  #############################################
-    # Qui ricreo l'immagine originale a partire dall'immagine permutata, effettuando la depermutazione dei blocchi
 
-    image_output_original_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
 
-    array_permutation = np.sort(array_permutation)
+def dePermutation(image_to_depermutation, side):
+    image = Image.open(image_to_depermutation)
+
+
+    image_input_array_3d = np.array(image, dtype=np.uint8)  # Rappresento l'immagine come una matrice tridimensionale
+
+    rows, cols = image_input_array_3d.shape[0], image_input_array_3d.shape[1]
+    image_output_original_array_3d = np.empty((rows, cols, 3), dtype=np.uint8)
+
+    if rows % side == cols % side == 0:
+        blocks_count = rows // side * cols // side
+    else:
+        raise ValueError(("ERRORE: la larghezza e l'altezza dell'immagine"
+                          "deve essere un multiplo del numero n = {} fornito in input".format(side)))
+
+
+    pixel_array = np.empty((blocks_count, side * side, 3), dtype=np.int32)
 
     block_index = 0
     for i in range(0, rows, side):
         for j in range(0, cols, side):
             for k in range(3):
+                block = image_input_array_3d[i:i + side, j:j + side, k]
                 ii = 0
                 for r in range(0, side):
                     for c in range(0, side):
-                        block[r][c] = pixel_array[array_permutation[block_index], ii, k]
+                        pixel_array[block_index, ii, k] = block[r, c]
+                        ii += 1
+            block_index += 1
+
+    random.seed(0)
+    array_permutation = random.sample(range(blocks_count),blocks_count)
+
+
+    block_index = 0
+    rand_index = 0
+    for i in range(0, rows, side):
+        for j in range(0, cols, side):
+            for k in range(3):
+                ii = 0
+
+                for r in range(0, side):
+                    for c in range(0, side):
+                        for randarr in range(blocks_count):
+                            if array_permutation[randarr]==block_index:
+                                rand_index = randarr
+                                randarr =0
+                                break
+
+
+
+                        block[r][c] = pixel_array[rand_index, ii, k]
                         ii += 1
                 image_output_original_array_3d[i:i + side, j:j + side, k] = block
             block_index += 1
@@ -96,11 +164,3 @@ def permutation(image_to_process, side):
     image = Image.fromarray(image_output_original_array_3d)
     image.save("image_output_original.png")
     image.close()
-
-    return
-
-
-
-def dePermutation(image_to_depermutation, key):
-    # TODO rendere globali le variabili "pixel_array" ed "array_permutation" in modo tale da poter scrivere in questa funzione la parte della depermutazione della funzione precedente
-    return
