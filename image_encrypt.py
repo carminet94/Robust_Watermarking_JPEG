@@ -21,13 +21,6 @@ def encryption(image_to_encrypt, key):
                           "deve essere un multiplo del numero n = {} fornito in input".format(side)))
 
 
-
-
-
-
-
-
-
     ##########################################  C I F R A T U R A  #####################################################
     # Qui trasformo gli "n" blocchi quadrati di dimensione 8 x 8 dell'immagine di partenza in blocchi di dimensione 1 x 64,
     # li inserisco in una tabella tridimensionale di dimensione n x 64 e la cifro
@@ -54,8 +47,6 @@ def encryption(image_to_encrypt, key):
     swap_array = np.array(encrypt_image_array[:, 0])
     encrypt_image_array[:, 0] = pixel_array_nocypher[:, 0]
     pixel_array_nocypher[:, 0] = swap_array
-
-
     # Qui trasformo gli "n" blocchi di dimensione 1 x 64 in blocchi quadrati di dimensione 8 x 8 e li inserisco in
     # una tabella tridimensionale di dimensione rows x cols; avrò l'immagine cifrata con i soli pixel DC in chiaro
 
@@ -120,17 +111,9 @@ def encryption(image_to_encrypt, key):
     # image3 = Image.fromarray(output_array_cypher)
     # image3.save("image_decypher.png")
     # image3.close()
-    return "image_AC_encrypt.png"
+    return "image_AC_encrypt.png", pixel_array_nocypher
 
-
-
-
-
-
-#
-#     return
-#
-def decryption(image_to_decrypt, key):
+def decryption(image_to_decrypt, key,pixel_array_nocypher):
     image = Image.open(image_to_decrypt)
     image_output_array_3d = np.array(image, dtype=np.uint8)
     rows, cols = image_output_array_3d.shape[0], image_output_array_3d.shape[1]
@@ -163,8 +146,8 @@ def decryption(image_to_decrypt, key):
     #### S W A P ####
     # Qui effettuo lo swap tra la colonna tridimensionale degli AC dell'immagine in chiaro, con quella cifrata
 
-    #pixel_array_cypher2[:, 0] = pixel_array_nocypher[:, 0]
-    image = Image.fromarray(pixel_array_cypher2)
+    pixel_array_cypher2[:, 0] = pixel_array_nocypher[:, 0]
+
 
     # Qui decifro la tabella tridimensionale di dimensione n x 64
 

@@ -5,8 +5,9 @@ from arc4 import ARC4
 from utils import *
 from scipy import fftpack
 from PIL import Image
-import scramble as sc
-
+import image_encrypt as img_encrypt
+import image_block_permutation as img_permutation
+import watermarking as wm
 class JPEGFileReader:
     TABLE_SIZE_BITS = 16
     BLOCKS_COUNT_BITS = 32
@@ -185,9 +186,18 @@ def main():
     #image.show()
     image.close()
 
-    sc.decrypt("Lena2.png", 12345)
-    image = Image.open("image-decrypted.png")
-    image.show()
+    #Decryption
+    key = 1234567899
+    enc, array_nocypher = img_encrypt.encryption("image_output_permutation.png", key)
+    decr = img_encrypt.decryption("Lena2.png", key, array_nocypher)
+
+    #Depermutation
+    img_permutation.dePermutation(decr, 16,0)
+
+    #Extract Watermark
+    block_modified = [[2, 46], [2, 52], [6, 6], [8, 56], [12, 14], [12, 38]]
+    wm.ExtractWatermark(block_modified)
+
 
 
 

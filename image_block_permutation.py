@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 
-def permutation(image_to_process, side):
+def permutation(image_to_process, side,key):
     # La funzione prende in input:
     # image_to_process: una stringa che rappresenta l'immagine da procesare (esempio: "image_input.png")
     # side: un numero che rappresenta la dimensioni del lato di un blocco quadrato (n x n) di cui l'immagine deve esserene divisa e permutata (esempio: 16)
@@ -52,7 +52,7 @@ def permutation(image_to_process, side):
     image_output_permutation_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
 
 
-    random.seed(0)
+    random.seed(key)
     array_permutation = random.sample(range(blocks_count),blocks_count)
 
 
@@ -105,7 +105,7 @@ def permutation(image_to_process, side):
 
 
 
-def dePermutation(image_to_depermutation, side):
+def dePermutation(image_to_depermutation, side,key):
     image = Image.open(image_to_depermutation)
 
 
@@ -135,7 +135,7 @@ def dePermutation(image_to_depermutation, side):
                         ii += 1
             block_index += 1
 
-    random.seed(0)
+    random.seed(key)
     array_permutation = random.sample(range(blocks_count),blocks_count)
 
 

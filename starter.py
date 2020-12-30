@@ -32,14 +32,15 @@ def main():
     # img_encrypt_decrypt.decryption("image_AC_encrypt.png", key)
     # img_permutation.dePermutation("image_decypher.png", key)
 
-
-    image_name = img_permutation.permutation(input_file, 16)
+    #Permutation
+    image_name = img_permutation.permutation(input_file, 16,0)
     #img_permutation.dePermutation(image_name, 16)
 
-
+    #Encryption
     key = 1234567899
-    enc = img_encrypt.encryption(image_name, key)
-    #decr = img_encrypt.decryption("image_AC_encrypt.png",key)
+    enc, array_nocypher = img_encrypt.encryption(image_name, key)
+
+    #decr = img_encrypt.decryption("image_AC_encrypt.png",key,array_nocypher)
     #We convert RGB image in YCbCr image
     image = Image.open(enc)
     ycbcr = image.convert('YCbCr')
@@ -55,6 +56,7 @@ def main():
     else:
         raise ValueError(("the width and height of the image "
                           "should both be mutiples of 8"))
+
 
     # dc is the top-left cell of the block, ac are all the other cells
 
@@ -143,8 +145,6 @@ def main():
               'ac_c': H_AC_C.value_to_bitstring_table()}
 
 
-    wm.watermark("dc_Y.txt")
-    dc_Y_modified = open("dc_Y_modified.txt", "w")
 
 
     encoder.write_to_file(output_file, dc, ac, blocks_count, tables)

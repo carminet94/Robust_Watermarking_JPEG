@@ -71,7 +71,6 @@ def watermark(dcfile):
         DC1M = [str(int) for int in DC1]
         raw1 = " ".join(DC0M)
         raw2 = " ".join(DC1M)
-
         dc_Y_modified.write(raw1)
         dc_Y_modified.write('\n')
         dc_Y_modified.write(raw2)
@@ -79,9 +78,10 @@ def watermark(dcfile):
     if(index!=len(bitwatermark)):
        raise ValueError(("Error no watermark"))
     dc_Y_modified.close()
+    print(modified_blocks)
+    return "dc_Y_modified.txt"
 
-
-
+def ExtractWatermark(modified_blocks):
     #Indexes to iterate through the file and find watermark's bits
     index = 0
     index_rows = -2
@@ -124,8 +124,9 @@ def watermark(dcfile):
                 break
         if (index == len(modified_blocks)):
             break
-    print("Bit del watermark: " + str(bitwatermark))
+    #print("Bit del watermark: " + str(bitwatermark))
     print("bitwatermark restituiti: ",bitWatermarkExtracted)
 
     dc_Y_modified.close()
+    return bitWatermarkExtracted
 
