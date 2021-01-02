@@ -1,13 +1,7 @@
-import argparse
 import math
-import numpy as np
-from arc4 import ARC4
 from utils import *
 from scipy import fftpack
 from PIL import Image
-import image_encrypt as img_encrypt
-import image_block_permutation as img_permutation
-import watermarking as wm
 class JPEGFileReader:
     TABLE_SIZE_BITS = 16
     BLOCKS_COUNT_BITS = 32
@@ -152,12 +146,10 @@ def idct_2d(image):
     return fftpack.idct(fftpack.idct(image.T, norm='ortho').T, norm='ortho')
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input", help="path to the input image")
-    args = parser.parse_args()
+def decoder(image_compression):
 
-    dc, ac, tables, blocks_count = read_image_file(args.input)
+    ####################################  D E C O M P R E S S I O N E  #################################################
+    dc, ac, tables, blocks_count = read_image_file(image_compression)
 
     # assuming that the block is a 8x8 square
     block_side = 8
@@ -169,38 +161,39 @@ def main():
 
     npmat = np.empty((image_side, image_side, 3), dtype=np.uint8)
 
+    dc_Y_mod = open("dc_Y_modDec.txt","w")
+
+    count = 0
+
     for block_index in range(blocks_count):
         i = block_index // blocks_per_line * block_side
         j = block_index % blocks_per_line * block_side
 
         for c in range(3):
             zigzag = [dc[block_index, c]] + list(ac[block_index, :, c])
+            # We save the DC for Y component in a file "dc_Y.txt"
+            if (c == 0):
+                dc_Y_mod.write(str(dc[block_index, c]))
+                dc_Y_mod.write(" ")
+                count += 1
+                if (count == (image_side // 8)):
+                    dc_Y_mod.write('\n')
+                    count = 0
+
             quant_matrix = zigzag_to_block(zigzag)
             dct_matrix = dequantize(quant_matrix, 'lum' if c == 0 else 'chrom')
             block = idct_2d(dct_matrix)
             npmat[i:i+8, j:j+8, c] = block + 128
 
+    dc_Y_mod.close()
+
     image = Image.fromarray(npmat, 'YCbCr')
     image = image.convert('RGB')
-    image.save("Lena2.png")
+    image.save("image_decompression.png")
     #image.show()
     image.close()
 
-    #Decryption
-    key = 1234567899
-    enc, array_nocypher = img_encrypt.encryption("image_output_permutation.png", key)
-    decr = img_encrypt.decryption("Lena2.png", key, array_nocypher)
-
-    #Depermutation
-    img_permutation.dePermutation(decr, 16,0)
-
-    #Extract Watermark
-    block_modified = [[2, 46], [2, 52], [6, 6], [8, 56], [12, 14], [12, 38]]
-    wm.ExtractWatermark(block_modified)
+    return "image_decompression.png", "dc_Y_modDec.txt"
 
 
-
-
-if __name__ == "__main__":
-     main()
 

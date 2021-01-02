@@ -23,10 +23,12 @@ else:
     def num_types():
         return (int,long)
 
+
 def dump( num ):
     print( "Len: {}".format( len(num) ))
     for element in num:
         print( "B: {}".format( store_to_num(element) ))
+
 
 def generic_encode( num, funcs ):
     ret_val = None
@@ -36,11 +38,13 @@ def generic_encode( num, funcs ):
         ret_val = funcs['encode_int']( num )
     return ret_val
 
+
 def encode_list( num, funcs ):
     ret_val = empty_varint_storage()
     for val in num:
         ret_val = ret_val + funcs['encode_int']( val )
     return ret_val
+
 
 def generic_decode( num, funcs ):
     ret_val = None

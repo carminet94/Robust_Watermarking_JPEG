@@ -1,5 +1,5 @@
 import itertools
-import numpy as np
+
 
 def watermark(dcfile):
     # Array that stores the index of the "modified" blocks
@@ -79,9 +79,10 @@ def watermark(dcfile):
        raise ValueError(("Error no watermark"))
     dc_Y_modified.close()
     print(modified_blocks)
-    return "dc_Y_modified.txt"
+    return "dc_Y_modified.txt", modified_blocks
 
-def ExtractWatermark(modified_blocks):
+
+def extractWatermark(dc_Y_modified,modified_blocks):
     #Indexes to iterate through the file and find watermark's bits
     index = 0
     index_rows = -2
@@ -92,13 +93,13 @@ def ExtractWatermark(modified_blocks):
     print(modified_blocks)
 
     #Opening the bitstream file of the DCs after the watermarking algorithm
-    dc_Y_modified= open("dc_Y_modified.txt", "r")
+    dc_Y_modDec= open(dc_Y_modified, "r")
     DC0= []
     DC1= []
 
     #Algorithm to extract watermarking's bits
     #Iterate through file lines 2 by 2
-    for line1, line2 in itertools.zip_longest(*[dc_Y_modified] * 2):
+    for line1, line2 in itertools.zip_longest(*[dc_Y_modDec] * 2):
         # DCs values
         DC0 = [int(i) for i in line1.split()]
         DC1 = [int(i) for i in line2.split()]
@@ -127,6 +128,6 @@ def ExtractWatermark(modified_blocks):
     #print("Bit del watermark: " + str(bitwatermark))
     print("bitwatermark restituiti: ",bitWatermarkExtracted)
 
-    dc_Y_modified.close()
+    dc_Y_modDec.close()
     return bitWatermarkExtracted
 
