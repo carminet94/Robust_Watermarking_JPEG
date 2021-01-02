@@ -104,7 +104,7 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
 
 def encoder(image_encrypt, output_file):
 
-    ####################################  C O M P R E S S I O N E  #################################################
+    ####################################  C O M P R E S S I O N   #################################################
     # We convert RGB image in YCbCr image
     image = Image.open(image_encrypt)
     ycbcr = image.convert('YCbCr')

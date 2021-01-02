@@ -14,12 +14,12 @@ def main():
     input_file = args.input
     output_file = args.output
 
-    ####################################  P E R M U T A Z I O N E  #####################################################
+    ####################################  P E R M U T A T I O N  #####################################################
     key_permutation = 0
     image_permutation = img_permutation.permutation(input_file, 16, key_permutation)
 
 
-    ####################################  C I F R A T U R A  ###########################################################
+    ####################################  E N C R Y P T I O N  ###########################################################
     key_cypher = 1234567899
     image_encrypt, array_nocypher = img_encrypt.encryption(image_permutation, key_cypher)
 
@@ -37,7 +37,7 @@ def main():
     image_decompression , dc_Y_mod = decoder.decoder(image_compression)
 
 
-    ####################################  D E C I F R A T U R A  #######################################################
+    ####################################  D E C R Y P T I O N  #######################################################
     image_decrypt = img_encrypt.deCryption(image_decompression, key_cypher, array_nocypher)
 
 
@@ -45,7 +45,7 @@ def main():
     wm.extractWatermark(dc_Y_mod, blocks_modified)
 
 
-    ####################################  D E P E R M U T A Z I O N E  #################################################
+    ####################################  D E P E R M U T A T I O N  #################################################
     image_depermutation = img_permutation.dePermutation(image_decrypt, 16, key_permutation)
 
 

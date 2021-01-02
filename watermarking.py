@@ -2,10 +2,10 @@ import itertools
 
 
 def watermark(dcfile):
-    # Array that stores the index of the "modified" blocks
+    #Array that stores the index of the "modified" blocks
     modified_blocks = []
 
-    # Thresholds for the watermarking algorithm
+    #Thresholds for the watermarking algorithm
     T1 = 15
     T2 = 18
 
@@ -125,7 +125,6 @@ def extractWatermark(dc_Y_modified,modified_blocks):
                 break
         if (index == len(modified_blocks)):
             break
-    #print("Bit del watermark: " + str(bitwatermark))
     print("bitwatermark restituiti: ",bitWatermarkExtracted)
 
     dc_Y_modDec.close()
