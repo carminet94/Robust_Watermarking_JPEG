@@ -25,8 +25,8 @@ def main():
     ####################################  E N C R Y P T I O N  ##########################################################
     print("I'm encrypting...")
     key_cipher = 1234567899
-    image_encrypt, array_nocipher = img_encrypt.encryption(image_permutation, key_cipher)
-    np.save("encrypted_array.npy", array_nocipher)
+    image_encrypt, swap_array = img_encrypt.encryption(image_permutation, key_cipher)
+    np.save("swap_encrypted_array.npy", swap_array)
 
 
 
