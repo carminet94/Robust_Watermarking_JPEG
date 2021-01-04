@@ -69,7 +69,7 @@ def encryption(image_to_encrypt, key):
     image.save("image_AC_encrypt.png")
     image.close()
 
-    return "image_AC_encrypt.png", pixel_array_nocipher
+    return "image_AC_encrypt.png", swap_array
 
 
 
@@ -113,7 +113,7 @@ def deCryption(image_to_decrypt, key, pixel_array_nocipher):
 
     #### S W A P ####
     #Swapping between ACs 3d column of the unmodified image and the same column of the ecrypted image
-    pixel_array_cipher2[:, 0] = pixel_array_nocipher[:, 0]
+    pixel_array_cipher2[:, 0] = pixel_array_nocipher
 
 
 
