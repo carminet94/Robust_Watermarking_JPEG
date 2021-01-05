@@ -1,9 +1,7 @@
 import argparse
 import encoder as encoder
-import decoder as decoder
 import image_block_permutation as img_permutation
 import image_encrypt as img_encrypt
-import watermarking as wm
 import numpy as np
 
 def main():

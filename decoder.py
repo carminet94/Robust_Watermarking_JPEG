@@ -189,11 +189,11 @@ def decoder(image_compression):
 
     image = Image.fromarray(npmat, 'YCbCr')
     image = image.convert('RGB')
-    image.save("image_decompression.png")
+    image.save("image_input_decompression.png")
     #image.show()
     image.close()
 
-    return "image_decompression.png", "dc_Y_modDec.txt"
+    return "image_input_decompression.png", "dc_Y_modDec.txt"
 
 
 

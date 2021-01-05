@@ -1,5 +1,4 @@
 import argparse
-import encoder as encoder
 import decoder as decoder
 import image_block_permutation as img_permutation
 import image_encrypt as img_encrypt

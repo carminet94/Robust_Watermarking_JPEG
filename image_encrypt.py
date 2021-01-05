@@ -66,10 +66,10 @@ def encryption(image_to_encrypt, key):
                 image_output_array_3d[i:i + side, j:j + side, k] = block
             block_index += 1
     image = Image.fromarray(image_output_array_3d)
-    image.save("image_AC_encrypt.png")
+    image.save("image_input_AC_encrypt.png")
     image.close()
 
-    return "image_AC_encrypt.png", swap_array
+    return "image_input_AC_encrypt.png", swap_array
 
 
 
@@ -138,7 +138,7 @@ def deCryption(image_to_decrypt, key, pixel_array_nocipher):
                 output_array_cipher[i:i + side, j:j + side, k] = block
             block_index += 1
     image = Image.fromarray(output_array_cipher)
-    image.save("image_decrypted.png")
+    image.save("image_input_decrypted.png")
     image.close()
 
-    return "image_decrypted.png"
+    return "image_input_decrypted.png"

@@ -62,10 +62,10 @@ def permutation(image_to_permutation, side, key):
 
 
     image = Image.fromarray(image_output_permutation_array_3d)
-    image.save("image_output_permutation.png")
+    image.save("image_input_permutation.png")
     image.close()
 
-    return "image_output_permutation.png"
+    return "image_input_permutation.png"
 
 
 
@@ -128,5 +128,5 @@ def dePermutation(image_to_depermutation, side, key):
             block_index += 1
 
     image = Image.fromarray(image_output_original_array_3d)
-    image.save("image_output_original.png")
+    image.save("image_input_depermutation_original.png")
     image.close()
