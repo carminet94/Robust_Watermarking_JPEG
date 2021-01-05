@@ -1,5 +1,5 @@
 import argparse
-import watermark_and_compression as watermark_compression
+import compression as compression
 import image_block_permutation as img_permutation
 import image_encrypt as img_encrypt
 import numpy as np
@@ -32,7 +32,7 @@ def main():
 
     ###########################  W A T E R M A K  A N D  C O M P R E S S I O N   #######################################
     print("I'm doing the compression...")
-    image_compression, blocks_modified = watermark_compression.watermark_and_compression(image_encrypt, output_file)
+    image_compression, blocks_modified = compression.compression(image_encrypt, output_file)
     np.save("watermark_blocks.npy", blocks_modified)
 
 
