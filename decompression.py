@@ -146,9 +146,9 @@ def idct_2d(image):
     return fftpack.idct(fftpack.idct(image.T, norm='ortho').T, norm='ortho')
 
 
-def decoder(image_compression):
+def decompression(image_compression):
 
-    ####################################  D E C O M P R E S S I O N E  #################################################
+    ####################################  D E C O M P R E S S I O N   ##################################################
     dc, ac, tables, blocks_count = read_image_file(image_compression)
 
     # assuming that the block is a 8x8 square
@@ -190,7 +190,6 @@ def decoder(image_compression):
     image = Image.fromarray(npmat, 'YCbCr')
     image = image.convert('RGB')
     image.save("image_input_decompression.png")
-    #image.show()
     image.close()
 
     return "image_input_decompression.png", "dc_Y_modDec.txt"

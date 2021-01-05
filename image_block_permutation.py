@@ -76,7 +76,7 @@ def permutation(image_to_permutation, side, key):
 #key: depermutation key, it has to be the same of the permutation phase (example: 0)
 def dePermutation(image_to_depermutation, side, key):
     image = Image.open(image_to_depermutation)
-    image_input_array_3d = np.array(image, dtype=np.uint8)  # Rappresento l'immagine come una matrice tridimensionale
+    image_input_array_3d = np.array(image, dtype=np.uint8)  # The image is represented as a three-dimensional matrix
     rows, cols = image_input_array_3d.shape[0], image_input_array_3d.shape[1]
     image_output_original_array_3d = np.empty((rows, cols, 3), dtype=np.uint8)
 
@@ -130,3 +130,4 @@ def dePermutation(image_to_depermutation, side, key):
     image = Image.fromarray(image_output_original_array_3d)
     image.save("image_input_depermutation_original.png")
     image.close()
+    return "image_input_depermutation_original.png"

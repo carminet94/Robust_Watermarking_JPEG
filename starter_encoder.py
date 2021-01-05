@@ -1,5 +1,5 @@
 import argparse
-import encoder as encoder
+import watermark_and_compression as watermark_compression
 import image_block_permutation as img_permutation
 import image_encrypt as img_encrypt
 import numpy as np
@@ -13,14 +13,16 @@ def main():
     input_file = args.input
     output_file = args.output
 
-    ####################################  P E R M U T A T I O N  #####################################################
+
+
+    ####################################  P E R M U T A T I O N  #######################################################
     print("I'm permuting...")
     key_permutation = 0
     image_permutation = img_permutation.permutation(input_file, 16, key_permutation)
 
 
 
-    ####################################  E N C R Y P T I O N  ##########################################################
+    ####################################  E N C R Y P T I O N  #########################################################
     print("I'm encrypting...")
     key_cipher = 1234567899
     image_encrypt, swap_array = img_encrypt.encryption(image_permutation, key_cipher)
@@ -28,10 +30,11 @@ def main():
 
 
 
-    ####################################  E N C O D E R  ###############################################################
+    ###########################  W A T E R M A K  A N D  C O M P R E S S I O N   #######################################
     print("I'm doing the compression...")
-    image_compression, blocks_modified = encoder.encoder(image_encrypt, output_file)
+    image_compression, blocks_modified = watermark_compression.watermark_and_compression(image_encrypt, output_file)
     np.save("watermark_blocks.npy", blocks_modified)
+
 
 
 if __name__ == "__main__":

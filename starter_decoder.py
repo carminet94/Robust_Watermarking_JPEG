@@ -1,5 +1,5 @@
 import argparse
-import decoder as decoder
+import decompression as decompression
 import image_block_permutation as img_permutation
 import image_encrypt as img_encrypt
 import watermarking as wm
@@ -18,16 +18,18 @@ def main():
 
 
 
-    ####################################  D E C O D E R  ###############################################################
+    ######################################  D E C O M P R E S S I O N  #################################################
     print("I'm doing the decompression...")
-    image_decompression , dc_Y_mod = decoder.decoder(input_file)
+    image_decompression , dc_Y_mod = decompression.decompression(input_file)
 
 
-    ####################################  D E C R Y P T I O N  #######################################################
+
+    #########################################  D E C R Y P T I O N  ####################################################
     print("I'm decrypting...")
     key_cipher = 1234567899
     array_encrypt = np.load(array_encrypt_file)
     image_decrypt = img_encrypt.deCryption(image_decompression, key_cipher, array_encrypt)
+
 
 
     ####################################  E X T R A C T W A T E R M A R K  #############################################
@@ -36,7 +38,8 @@ def main():
     wm.extractWatermark(dc_Y_mod, watermarking_blocks)
 
 
-    ####################################  D E P E R M U T A T I O N  #################################################
+
+    #######################################  D E P E R M U T A T I O N  ################################################
     print("I'm depermuting...")
     key_permutation = 0
     image_depermutation = img_permutation.dePermutation(image_decrypt, 16, key_permutation)
