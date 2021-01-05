@@ -32,7 +32,7 @@ def main():
 
 
 
-    ####################################  E X T R A C T W A T E R M A R K  #############################################
+    ####################################  E X T R A C T   W A T E R M A R K  ###########################################
     print("I'm extracting the watermark...")
     watermarking_blocks = np.load(watermarking_blocks_file)
     wm.extractWatermark(dc_Y_mod, watermarking_blocks)
