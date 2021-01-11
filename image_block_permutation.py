@@ -47,7 +47,7 @@ def permutation(image_to_permutation, side, key):
     # A new image is created composed by permutated blocks and previous rows are traslated back into squared blocks of the img
     image_output_permutation_array_3d = np.empty((rows, cols, 3), dtype = np.uint8)
     random.seed(key)
-    array_permutation = random.sample(range(blocks_count),blocks_count)
+    array_permutation = random.sample(range(blocks_count), blocks_count)
     block_index = 0
     for i in range(0, rows, side):
         for j in range(0, cols, side):

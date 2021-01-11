@@ -77,7 +77,7 @@ def encryption(image_to_encrypt, key):
 #image_to_encrypt: a string that represents the image to process (example: "image_encrypted.png")
 #key: a number that represents the decryption key, it has to be the same used for the encryption phase (example: 123456789)
 #pixel_array_nocipher: all images's pixels that aren't encrypted
-def deCryption(image_to_decrypt, key, pixel_array_nocipher):
+def deCryption(image_to_decrypt, key, swap_pixel_array_nocipher):
     image = Image.open(image_to_decrypt)
     image_output_array_3d = np.array(image, dtype=np.uint8)
     rows, cols = image_output_array_3d.shape[0], image_output_array_3d.shape[1]
@@ -113,9 +113,7 @@ def deCryption(image_to_decrypt, key, pixel_array_nocipher):
 
     #### S W A P ####
     #Swapping between ACs 3d column of the unmodified image and the same column of the ecrypted image
-    pixel_array_cipher2[:, 0] = pixel_array_nocipher
-
-
+    pixel_array_cipher2[:, 0] = swap_pixel_array_nocipher
 
 
     #Decryption 3d n x 64 table
