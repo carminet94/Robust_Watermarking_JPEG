@@ -1,7 +1,8 @@
 import itertools
+import numpy as np
 
 
-def watermark(dcfile):
+def watermark(dcfile, input_file):
     print("I'm inserting watermark...")
     #Array that stores the index of the "modified" blocks
     modified_blocks = []
@@ -20,8 +21,13 @@ def watermark(dcfile):
     # New file with the new DC
     dc_Y_modified = open("dc_Y_modified.txt", "w")
 
+    watermark_array = []
+    fp = open(input_file,"r")
+    for x in fp:
+        for char in x:
+            watermark_array.append(int(char))
     #Example of a watermark
-    bitwatermark = [1, 0, 1, 0, 1, 1]
+    bitwatermark = np.asarray(watermark_array)
     print("Watermark inserted: ", bitwatermark)
 
     #Algorithm to insert watermaking's bits

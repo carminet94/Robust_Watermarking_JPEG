@@ -8,10 +8,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="path to the input image")
     parser.add_argument("output", help="path to the output image")
+    parser.add_argument("watermark_input", help="path to file containing the watermark array")
     args = parser.parse_args()
 
     input_file = args.input
     output_file = args.output
+    watermark_file = args.watermark_input
 
 
 
@@ -32,7 +34,7 @@ def main():
 
     ###########################  W A T E R M A K  A N D  C O M P R E S S I O N   #######################################
     print("I'm doing the compression...")
-    image_compression, blocks_modified = compression.compression(image_encrypt, output_file)
+    image_compression, blocks_modified = compression.compression(image_encrypt, output_file, watermark_file)
     np.save("watermark_blocks.npy", blocks_modified)
 
 

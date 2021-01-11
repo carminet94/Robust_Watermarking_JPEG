@@ -102,7 +102,7 @@ def write_to_file(filepath, dc, ac, blocks_count, tables):
     f.close()
 
 
-def compression(image_encrypt, output_file):
+def compression(image_encrypt, output_file, watermark_file):
 
     ##########################################  C O M P R E S S I O N   ################################################
     # We convert RGB image in YCbCr image
@@ -168,7 +168,7 @@ def compression(image_encrypt, output_file):
     dc_Y.close()
 
     ########  W A T E R M A R K I N G  #########
-    dc_mod,block_modified = watermark.watermark("dc_Y.txt")
+    dc_mod,block_modified = watermark.watermark("dc_Y.txt", watermark_file)
     dc_Y_modified = open(dc_mod, "r")
 
     # Overwriting DC coefficient of luminance with modified DC coefficient
