@@ -2,7 +2,7 @@ import argparse
 import decompression as decompression
 import image_block_permutation as img_permutation
 import image_encrypt as img_encrypt
-import watermarking as wm
+import watermarking as watermark
 import numpy as np
 
 def main():
@@ -37,7 +37,7 @@ def main():
     ####################################  E X T R A C T   W A T E R M A R K  ###########################################
     print("I'm extracting the watermark...")
     watermarking_blocks = np.load(watermarking_blocks_file)
-    wm.extractWatermark(dc_Y_mod, watermarking_blocks)
+    watermark.extractWatermark(dc_Y_mod, watermarking_blocks)
 
 
 
