@@ -62,10 +62,10 @@ def permutation(image_to_permutation, side, key):
 
 
     image = Image.fromarray(image_output_permutation_array_3d)
-    image.save("image_input_permutation.png")
+    image.save("Image_permutation.png")
     image.close()
 
-    return "image_input_permutation.png"
+    return "Image_permutation.png"
 
 
 
@@ -74,7 +74,7 @@ def permutation(image_to_permutation, side, key):
 #side: a number that represents the size of a side of squared block (n x n) in which it has to be divided and "depermutated" (example: 16x16)
 #this value has to be the same of the one of permutation phase
 #key: depermutation key, it has to be the same of the permutation phase (example: 0)
-def dePermutation(image_to_depermutation, side, key):
+def dePermutation(image_to_depermutation, side, key, output_file):
     image = Image.open(image_to_depermutation)
     image_input_array_3d = np.array(image, dtype=np.uint8)  # The image is represented as a three-dimensional matrix
     rows, cols = image_input_array_3d.shape[0], image_input_array_3d.shape[1]
@@ -128,6 +128,6 @@ def dePermutation(image_to_depermutation, side, key):
             block_index += 1
 
     image = Image.fromarray(image_output_original_array_3d)
-    image.save("image_input_depermutation_original.png")
+    image.save(output_file)
     image.close()
-    return "image_input_depermutation_original.png"
+    return output_file

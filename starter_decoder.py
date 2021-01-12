@@ -8,11 +8,13 @@ import numpy as np
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="path to the input image")
+    parser.add_argument("output", help="path to the output image")
     parser.add_argument("swap_encrypted_array", help="path to the encrypted array")
     parser.add_argument("watermarking_blocks", help="path to the watermarking's blocks")
     args = parser.parse_args()
 
     input_file = args.input
+    output_file = args.output
     array_encrypt_file = args.swap_encrypted_array
     watermarking_blocks_file = args.watermarking_blocks
 
@@ -42,7 +44,7 @@ def main():
     #######################################  D E P E R M U T A T I O N  ################################################
     print("I'm depermuting...")
     key_permutation = 0
-    image_depermutation = img_permutation.dePermutation(image_decrypt, 16, key_permutation)
+    image_depermutation = img_permutation.dePermutation(image_decrypt, 16, key_permutation, output_file)
 
 
 
