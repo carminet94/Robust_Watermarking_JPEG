@@ -9,24 +9,25 @@ def main():
     parser.add_argument("input", help="path to the input image")
     parser.add_argument("output", help="path to the output image")
     parser.add_argument("watermark_input", help="path to file containing the watermark array")
+    parser.add_argument("key_permutation", help="path to the input image")
+    parser.add_argument("key_cypher", help="path to the input image")
     args = parser.parse_args()
 
     input_file = args.input
     output_file = args.output
     watermark_file = args.watermark_input
-
+    key_permutation = args.key_permutation
+    key_cipher = args.key_cypher
 
 
     ####################################  P E R M U T A T I O N  #######################################################
     print("I'm permuting...")
-    key_permutation = 0
     image_permutation = img_permutation.permutation(input_file, 16, key_permutation)
 
 
 
     ####################################  E N C R Y P T I O N  #########################################################
     print("I'm encrypting...")
-    key_cipher = 1234567899
     image_encrypt, swap_array = img_encrypt.encryption(image_permutation, key_cipher)
     np.save("swap_encrypted_array.npy", swap_array)
 
