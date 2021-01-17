@@ -19,19 +19,19 @@ The tool is divided into 2 main scripts: starter_encoder.py and starter_decoder.
 
 1. starter_encoder.py
 * Given 5 parameters by input: 
-> input : path to the input image (must be a 8x8 image at least)
-> output : path to the output image (compressed image)
-> watermark_input : path to a file containing the watermark array bit by bit (the size depends on the images passed by input)
-> key_permutation : a key number for the permutation
+> input : path to the input image (must be a 8x8 image at least) <br />
+> output : path to the output image (compressed image) <br />
+> watermark_input : path to a file containing the watermark array bit by bit (the size depends on the images passed by input) <br />
+> key_permutation : a key number for the permutation <br />
 > key_cypher : a key number for the encryption
 
 It compress the image after permuting,encrypting and inserting the watermark in it. The output image cannot be opened because it is compressed so the second script (starter_decoder.py) must be ran to decompress it.
 
 2. starter_decoder.py
 * Given 4 parameters by input:
-> input : path to the input image (compressed image that has been computed before)
-> output : path to the output image (decompressed image)
-> swap_encrypted_array : path to the encrypted array file (it has been created after the encryption phase of the first script)
+> input : path to the input image (compressed image that has been computed before) <br />
+> output : path to the output image (decompressed image) <br />
+> swap_encrypted_array : path to the encrypted array file (it has been created after the encryption phase of the first script) <br />
 > watermarking_blocks : path to the watermarking's blocks file (it has been created after the watermarking phase of the first script)
 
 It decompress the image after (un)permuting, decrypting and extracting the watermark from it to check if it is the same of the file passed by input. The extraction doesn't remove watermark's bits from the image so it will be permanently marked by those, showing that even with several attacks the watermark's bits won't be removed.
