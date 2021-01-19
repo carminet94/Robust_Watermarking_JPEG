@@ -49,7 +49,7 @@ It decompress the image after (un)permuting, decrypting and extracting the water
 * **Silvio Corso** - *Initial work* - [s-corso-98](https://github.com/s-corso-98)
 * **Francesco Maria D'Auria** - *Initial work* - [K1NG-CRIM50N](https://github.com/K1NG-CR1M50N)
 * **Carmine Tramontano** - *Initial work* - [carminet94](https://github.com/carminet94)
-* **Angela Vecchione** - *Initial work* - [angellavec94](https://github.com/angelavec94)
+* **Angela Vecchione** - *Initial work* - [angelavec94](https://github.com/angelavec94)
 
 ## License
 
